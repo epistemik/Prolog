@@ -1,0 +1,116 @@
+female(megan).
+female(louise).
+female(marielaure).
+female(kelly).
+female(cathy).
+female(june).
+female(esthel).
+female(mado).
+female(sally).
+
+uncle(A,B) :-
+    male(A),
+    parents(B,C,D),
+    ( sibling(A,C)
+    ; sibling(A,D)
+    ).
+
+grandparents(A,B,C) :-
+    parents(A,D,E),
+    ( parents(D,B,C)
+    ; parents(E,B,C)
+    ).
+
+child(A,B) :-
+    ( parents(A,B,C)
+    ; parents(A,D,B)
+    ).
+
+cousin(A,B) :-
+    grandparents(A,C,D),
+    grandparents(B,C,D),
+    not (  sibling(A,B)
+    ),
+    A \= B.
+
+grandchild(A,B) :-
+    ( grandparents(A,B,C)
+    ; grandparents(A,D,B)
+    ).
+
+sibling(A,B) :-
+    ( brother(A,B)
+    ; sister(A,B)
+    ).
+
+mother(A,B) :-
+    female(A),
+    parents(B,C,A).
+
+parents(thomas,mark,louise).
+parents(marielaure,mark,louise).
+parents(mark,harold,june).
+parents(louise,gordon,esthel).
+parents(kelly,harold,june).
+parents(cathy,harold,june).
+parents(mado,gordon,esthel).
+parents(chuck,gordon,esthel).
+parents(sally,gordon,esthel).
+parents(david,pierre,mado).
+parents(shane,john,kelly).
+parents(marc,john,kelly).
+parents(jeff,john,kelly).
+parents(corey,barry,cathy).
+parents(tj,barry,cathy).
+parents(megan,barry,cathy).
+
+father(A,B) :-
+    male(A),
+    parents(B,A,C).
+
+niece(A,B) :-
+    female(A),
+    ( uncle(B,A)
+    ; aunt(B,A)
+    ).
+
+sister(A,B) :-
+    female(A),
+    parents(A,C,D),
+    parents(B,C,D),
+    A \= B.
+
+aunt(A,B) :-
+    female(A),
+    parents(B,C,D),
+    ( sibling(A,C)
+    ; sibling(A,D)
+    ).
+
+brother(A,B) :-
+    male(A),
+    parents(B,C,D),
+    parents(A,C,D),
+    A \= B.
+
+male(mark).
+male(thomas).
+male(harold).
+male(gordon).
+male(chuck).
+male(david).
+male(pierre).
+male(john).
+male(barry).
+male(shane).
+male(marc).
+male(jeff).
+male(corey).
+male(tj).
+
+nephew(A,B) :-
+    male(A),
+    ( uncle(B,A)
+    ; aunt(B,A)
+    ).
+

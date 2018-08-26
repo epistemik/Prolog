@@ -1,0 +1,29 @@
+
+% Facts
+%-------
+male(mark).
+male(thomas).
+female(louise).
+female(marielaure).
+male(harold).
+male(gordon).
+female(june).
+female(esthel).
+%parent(mark, thomas).
+%parent(mark, marielaure).
+parent(louise, thomas).
+parent(louise, marielaure).
+parent(harold, mark).
+parent(gordon, louise).
+parent(june, mark).
+parent(esthel, louise).
+
+% Rules
+%-------
+child(C,P) :- parent(P,C).
+father(F,C) :- male(F), parent(F,C).
+mother(M,C) :- female(M), parent(M,C).
+grandparent(G,X) :- parent(G,Y), parent(Y,X).
+sister(A,B) :- parent(M,A), parent(M,B), female(A), A \= B.
+brother(X,Y) :- parent(P,Y), parent(P,X), male(X), X \= Y.
+sibling(W,Z) :- brother(W,Z) ; sister(W,Z).

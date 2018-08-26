@@ -1,0 +1,43 @@
+% Facts
+%-------
+male(mark).
+male(thomas).
+male(harold).
+male(gordon).
+male(chuck).
+male(david).
+male(pierre).
+female(louise).
+female(marielaure).
+female(kelly).
+female(cathy).
+female(june).
+female(esthel).
+female(mado).
+female(sally).
+parents(thomas, mark, louise).
+parents(marielaure, mark, louise).
+parents(mark, harold, june).
+parents(louise, gordon, esthel).
+parents(kelly, harold, june).
+parents(cathy, harold, june).
+parents(mado, gordon, esthel).
+parents(chuck, gordon, esthel).
+parents(sally, gordon, esthel).
+parents(david, pierre, mado).
+
+% Rules
+%-------
+child(C,P) :- parents(C,P,_) ; parents(C,_,P).
+father(F,C) :- male(F), parents(C,F,_).
+mother(M,C) :- female(M), parents(C,_,M).
+grandparent(G,X) :- parents(X,F,M), (parents(F,G,_);parents(F,_,G);parents(M,G,_);parents(M,_,G)).
+grandchild(X,G) :- grandparent(G,X).
+sister(A,B) :- female(A), parents(A,F,M), parents(B,F,M), A\=B.
+brother(X,Y) :- male(X), parents(Y,F,M), parents(X,F,M), X\=Y.
+sibling(W,Z) :- brother(W,Z) ; sister(W,Z).
+uncle(U,N) :- male(U), parents(N,F,M), (sibling(U,F) ; sibling(U,M)).
+aunt(A,N) :- female(A), parents(N,F,M), (sibling(A,F) ; sibling(A,M)).
+nephew(N,X) :- male(N), (uncle(X,N) ; aunt(X,N)).
+niece(N,Y) :- female(N), (uncle(Y,N) ; aunt(Y,N)).
+cousin(K,L) :- grandparent(G,K), grandparent(G,L), not(sibling(K,L)), K\=L.

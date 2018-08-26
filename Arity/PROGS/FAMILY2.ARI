@@ -1,0 +1,21 @@
+father(mark, thomas).
+father(mark, marielaure).
+mother(louise, thomas).
+mother(louise, marielaure).
+parent(P,C) :- father(P,C) ; mother(P,C).
+grandparent(G,X) :- parent(G,Y) , parent(Y,X).
+father(harold, mark).
+father(gordon, louise).
+mother(june, mark).
+mother(esthel, louise).
+male(mark).
+male(thomas).
+female(louise).
+female(marielaure).
+brother(X,Y) :- male(X) , parent(P,X) , parent(P,Y) , X \= Y.
+sister(W,Z) :- female(W) , parent(P,W) , parent(P,Z), W \= Z.
+male(harold).
+male(gordon).
+female(june).
+female(esthel).
+sibling(A,B) :- parent(P,A) , parent(P,B) , A \= B.
