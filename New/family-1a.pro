@@ -62,23 +62,24 @@ daughter(D,P) :- female(D) , child(D,P).
 son(S,P) :- male(S) , child(S,P).
 father(Fa,C) :- male(Fa), child(C,Fa).
 mother(Mo,C) :- female(Mo), child(C,Mo).
-grandparents(X,G1,G2) :- parents(X,P1,P2), ( (parents(P1,G1,G2) ; parents(P2,G1,G2)) ; (parents(P1,G2,G1) ; parents(P2,G2,G1)) ).
+grandparent(X,Gp) :- parents(X,P1,P2), ( parents(P1,Gp,_) ; parents(P1,_,Gp) ; parents(P2,Gp,_) ; parents(P2,_,Gp) ).
+% in Prolog, DO NOT create definitions for groups like 'grandparents' 
+% but instead create a definition for the single case, e.g. 'grandparent' instead and find all cases for that
+%grandparents(X,G1,G2) :- grandparent(X,G1) , grandparent(X,G2).
 grandchild(X,G) :- grandparents(X,G,_) ; grandparents(X,_,G).
-sister(Ss,X) :- female(Ss), parents(Ss,P1,P2), ( parents(X,P1,P2) ; parents(X,P2,P1) ), Ss\=X.
-% half_sister, half_brother
-brother(Br,Y) :- male(Br), parents(Br,P1,P2), ( parents(Y,P1,P2) ; parents(Y,P2,P1) ), Br\=Y.
+sister(Ss,X) :- female(Ss) , parents(Ss,P1,P2) , ( parents(X,P1,P2) ; parents(X,P2,P1) ) , Ss\=X.
+% half_sister, half_brother, full_sister, full_brother
+brother(Br,Y) :- male(Br) , parents(Br,P1,P2) , ( parents(Y,P1,P2) ; parents(Y,P2,P1) ) , Br\=Y.
 sibling(W,Z) :- brother(W,Z) ; sister(W,Z).
-aunt(A,Nn) :- female(A), parents(Nn,P1,P2),
+aunt(A,Nn) :- female(A) , parents(Nn,P1,P2),
              ( sibling(A,P1) ; sibling(A,P2) ; (sibling(Q,P1) , spouse(A,Q)) ; (sibling(R,P2) , spouse(A,R)) ).
-uncle(U,Nn) :- male(U), parents(Nn,P1,P2),
+uncle(U,Nn) :- male(U) , parents(Nn,P1,P2),
              ( sibling(U,P1) ; sibling(U,P2) ; (sibling(Q,P1) , spouse(U,Q)) ; (sibling(R,P2) , spouse(U,R)) ).
-% too many problems with this definition of uncle() trying to use aunt()
-% -- duplicate instantiations in some cases if DON'T have the 'A\=P1 , A\=P2'
-%    or leaves out chuck as uncle()... ??
-%uncle(U,Nn) :- male(U), parents(Nn,P1,P2), ( sibling(U,P1) ; sibling(U,P2) ) ; ((aunt(A,Nn) , spouse(A,U)) , A\=P1) , A\=P2) ).
-nephew(Np,X) :- male(Np), (uncle(X,Np) ; aunt(X,Np)).
-niece(Nc,Y) :- female(Nc), (uncle(Y,Nc) ; aunt(Y,Nc)).
-cousin(K,L) :- grandparents(K,GF,GM), grandparents(L,GF,GM), not(sibling(K,L)), K\=L.
+nephew(Np,X) :- male(Np) , (uncle(X,Np) ; aunt(X,Np)).
+niece(Nc,Y) :- female(Nc) , (uncle(Y,Nc) ; aunt(Y,Nc)).
+% half_cousin, full_cousin
+cousin(K,L) :- grandparent(K,Gp) , grandparent(L,Gp) , not(sibling(K,L)), K\=L.
+%cousin(K,L) :- grandparents(K,GF,GM) , grandparents(L,GF,GM) , not(sibling(K,L)), K\=L.
 brother_in_law(B,P) :- (brother(B,X),spouse(X,P)); (sister(Y,P),spouse(Y,B)).
 sister_in_law(S,P) :- (sister(S,X),spouse(X,P)); (brother(Y,P),spouse(Y,S)).
 % father_in_law, mother_in_law, in_law, great_grandparents ...
